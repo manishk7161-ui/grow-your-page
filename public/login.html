@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login / Register - Grow Your Page</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="min-h-screen flex flex-col justify-center items-center px-4 py-12">
+
+  <!-- Logo Banner -->
+  <div class="mb-8 text-center">
+    <a href="/" class="inline-flex items-center space-x-3 mb-2">
+      <div class="w-12 h-12 rounded-xl bg-gradient-to-tr from-indigo-500 to-emerald-400 flex items-center justify-center text-white text-2xl font-black shadow-lg">
+        G
+      </div>
+      <span class="text-3xl font-extrabold tracking-tight gradient-text">Grow Your Page</span>
+    </a>
+    <p class="text-slate-400 text-sm">Sign in to your Customer or Admin Account</p>
+  </div>
+
+  <!-- Form Container -->
+  <div class="glass-card w-full max-w-md p-8 shadow-2xl">
+    
+    <!-- Tab Switcher -->
+    <div class="flex border-b border-slate-700/80 mb-6">
+      <button id="tab-login-btn" onclick="switchTab('login')" class="flex-1 py-3 text-center font-bold text-indigo-400 border-b-2 border-indigo-500 transition">
+        Login
+      </button>
+      <button id="tab-register-btn" onclick="switchTab('register')" class="flex-1 py-3 text-center font-semibold text-slate-400 hover:text-white border-b-2 border-transparent transition">
+        Register
+      </button>
+    </div>
+
+    <!-- Alert Box -->
+    <div id="alert-box" class="hidden mb-4 p-3 rounded-lg text-xs font-medium border"></div>
+
+    <!-- LOGIN FORM -->
+    <form id="login-form" onsubmit="handleLogin(event)" class="space-y-4">
+      <div>
+        <label class="block text-slate-300 text-xs font-semibold uppercase mb-1">Email or Username</label>
+        <div class="relative">
+          <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-500">
+            <i class="fa-solid fa-envelope"></i>
+          </span>
+          <input type="text" id="login-email" required placeholder="your@email.com" class="form-input pl-10 text-sm">
+        </div>
+      </div>
+
+      <div>
+        <label class="block text-slate-300 text-xs font-semibold uppercase mb-1">Password</label>
+        <div class="relative">
+          <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-500">
+            <i class="fa-solid fa-lock"></i>
+          </span>
+          <input type="password" id="login-password" required placeholder="••••••••" class="form-input pl-10 text-sm">
+        </div>
+      </div>
+
+      <button type="submit" class="btn-primary-custom w-full py-3 text-sm mt-2">
+        <i class="fa-solid fa-right-to-bracket mr-2"></i> Log In
+      </button>
+    </form>
+
+    <!-- REGISTER FORM -->
+    <form id="register-form" onsubmit="handleRegister(event)" class="space-y-4 hidden">
+      <div>
+        <label class="block text-slate-300 text-xs font-semibold uppercase mb-1">Username</label>
+        <input type="text" id="reg-username" required placeholder="grower123" class="form-input text-sm">
+      </div>
+
+      <div>
+        <label class="block text-slate-300 text-xs font-semibold uppercase mb-1">Email Address</label>
+        <input type="email" id="reg-email" required placeholder="your@email.com" class="form-input text-sm">
+      </div>
+
+      <div>
+        <label class="block text-slate-300 text-xs font-semibold uppercase mb-1">Password</label>
+        <input type="password" id="reg-password" required minlength="6" placeholder="Min 6 characters" class="form-input text-sm">
+      </div>
+
+      <button type="submit" class="btn-primary-custom w-full py-3 text-sm mt-2">
+        <i class="fa-solid fa-user-plus mr-2"></i> Create Account
+      </button>
+    </form>
+
+  </div>
+
+  <script>
+    function switchTab(tab) {
+      const loginBtn = document.getElementById('tab-login-btn');
+      const regBtn = document.getElementById('tab-register-btn');
+      const loginForm = document.getElementById('login-form');
+      const regForm = document.getElementById('register-form');
+
+      hideAlert();
+
+      if (tab === 'login') {
+        loginBtn.className = 'flex-1 py-3 text-center font-bold text-indigo-400 border-b-2 border-indigo-500 transition';
+        regBtn.className = 'flex-1 py-3 text-center font-semibold text-slate-400 hover:text-white border-b-2 border-transparent transition';
+        loginForm.classList.remove('hidden');
+        regForm.classList.add('hidden');
+      } else {
+        regBtn.className = 'flex-1 py-3 text-center font-bold text-indigo-400 border-b-2 border-indigo-500 transition';
+        loginBtn.className = 'flex-1 py-3 text-center font-semibold text-slate-400 hover:text-white border-b-2 border-transparent transition';
+        regForm.classList.remove('hidden');
+        loginForm.classList.add('hidden');
+      }
+    }
+
+    function showAlert(msg, isSuccess = false) {
+      const alertBox = document.getElementById('alert-box');
+      alertBox.classList.remove('hidden');
+      if (isSuccess) {
+        alertBox.className = 'mb-4 p-3 rounded-lg text-xs font-medium bg-emerald-500/20 text-emerald-300 border border-emerald-500/40';
+      } else {
+        alertBox.className = 'mb-4 p-3 rounded-lg text-xs font-medium bg-red-500/20 text-red-300 border border-red-500/40';
+      }
+      alertBox.innerText = msg;
+    }
+
+    function hideAlert() {
+      document.getElementById('alert-box').classList.add('hidden');
+    }
+
+    function fillLogin(email, pwd) {
+      switchTab('login');
+      document.getElementById('login-email').value = email;
+      document.getElementById('login-password').value = pwd;
+    }
+
+    async function handleLogin(e) {
+      e.preventDefault();
+      hideAlert();
+
+      const email = document.getElementById('login-email').value;
+      const password = document.getElementById('login-password').value;
+
+      try {
+        const res = await fetch('/api/auth/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password })
+        });
+        const data = await res.json();
+
+        if (data.success) {
+          localStorage.setItem('gyp_token', data.token);
+          localStorage.setItem('gyp_user', JSON.stringify(data.user));
+          showAlert('Login successful! Redirecting...', true);
+
+          setTimeout(() => {
+            if (data.user.role === 'admin') {
+              window.location.href = '/admin-dashboard';
+            } else {
+              window.location.href = '/customer-dashboard';
+            }
+          }, 800);
+        } else {
+          showAlert(data.message || 'Login failed.');
+        }
+      } catch (err) {
+        showAlert('Server connection error. Please try again.');
+      }
+    }
+
+    async function handleRegister(e) {
+      e.preventDefault();
+      hideAlert();
+
+      const username = document.getElementById('reg-username').value;
+      const email = document.getElementById('reg-email').value;
+      const password = document.getElementById('reg-password').value;
+
+      try {
+        const res = await fetch('/api/auth/register', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username, email, password })
+        });
+        const data = await res.json();
+
+        if (data.success) {
+          localStorage.setItem('gyp_token', data.token);
+          localStorage.setItem('gyp_user', JSON.stringify(data.user));
+          showAlert('Account created! Redirecting to dashboard...', true);
+          setTimeout(() => {
+            window.location.href = '/customer-dashboard';
+          }, 1000);
+        } else {
+          showAlert(data.message || 'Registration failed.');
+        }
+      } catch (err) {
+        showAlert('Server connection error. Please try again.');
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      if (urlParams.get('tab') === 'register') {
+        switchTab('register');
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Customer Portal - Grow Your Page</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="min-h-screen flex flex-col">
+
+  <!-- Customer Navbar -->
+  <nav class="glass-nav sticky top-0 z-50 py-3.5 px-6">
+    <div class="max-w-7xl mx-auto flex items-center justify-between">
+      <div class="flex items-center space-x-3">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-500 to-emerald-400 flex items-center justify-center text-white text-xl font-black shadow-lg">
+          G
+        </div>
+        <div>
+          <span class="text-xl font-extrabold tracking-tight gradient-text">Grow Your Page</span>
+          <span class="ml-2 text-xs font-semibold px-2 py-0.5 rounded bg-indigo-500/20 text-indigo-300 border border-indigo-500/30">Customer Portal</span>
+        </div>
+      </div>
+
+      <!-- User Profile & Wallet Balance Badge -->
+      <div class="flex items-center space-x-4">
+        <div class="flex items-center space-x-2 bg-emerald-500/10 border border-emerald-500/30 px-3.5 py-1.5 rounded-full text-emerald-400 font-bold text-sm">
+          <i class="fa-solid fa-wallet"></i>
+          <span>Balance: ₹<span id="user-balance-nav">0.00</span></span>
+        </div>
+
+        <div class="flex items-center space-x-3 pl-2 border-l border-slate-800">
+          <span id="username-display" class="text-sm font-semibold text-slate-200">User</span>
+          <button onclick="handleLogout()" title="Logout" class="w-8 h-8 rounded-lg bg-slate-800 hover:bg-red-500/20 hover:text-red-400 text-slate-400 flex items-center justify-center transition">
+            <i class="fa-solid fa-right-from-bracket text-xs"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Container -->
+  <main class="max-w-7xl mx-auto px-6 py-8 flex-grow w-full">
+
+    <!-- Global Alert Box -->
+    <div id="alert-box" class="hidden mb-6 p-4 rounded-xl text-sm font-medium border shadow-lg"></div>
+
+    <!-- Navigation Tabs -->
+    <div class="flex flex-wrap gap-2 mb-8 border-b border-slate-800 pb-4">
+      <button id="tab-btn-new-order" onclick="switchCustomerTab('new-order')" class="px-5 py-2.5 rounded-xl font-bold text-sm bg-indigo-600 text-white shadow-lg transition">
+        <i class="fa-solid fa-cart-plus mr-2"></i> New Order
+      </button>
+      <button id="tab-btn-add-money" onclick="switchCustomerTab('add-money')" class="px-5 py-2.5 rounded-xl font-semibold text-sm text-slate-400 hover:text-white hover:bg-slate-800/60 transition">
+        <i class="fa-solid fa-wallet mr-2 text-emerald-400"></i> Add Money (Min ₹5)
+      </button>
+      <button id="tab-btn-orders" onclick="switchCustomerTab('orders')" class="px-5 py-2.5 rounded-xl font-semibold text-sm text-slate-400 hover:text-white hover:bg-slate-800/60 transition">
+        <i class="fa-solid fa-clock-rotate-left mr-2 text-indigo-400"></i> Order History
+      </button>
+      <button id="tab-btn-services" onclick="switchCustomerTab('services')" class="px-5 py-2.5 rounded-xl font-semibold text-sm text-slate-400 hover:text-white hover:bg-slate-800/60 transition">
+        <i class="fa-solid fa-list-ul mr-2 text-purple-400"></i> Service Directory
+      </button>
+    </div>
+
+    <!-- TAB 1: NEW ORDER -->
+    <div id="tab-new-order" class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <div class="lg:col-span-2 glass-card p-6 shadow-xl">
+        <h2 class="text-xl font-extrabold text-white mb-6 flex items-center">
+          <i class="fa-solid fa-plus-circle text-indigo-400 mr-2.5"></i> Place New Order
+        </h2>
+
+        <form id="new-order-form" onsubmit="submitNewOrder(event)" class="space-y-5">
+          
+          <!-- Category Select -->
+          <div>
+            <label class="block text-slate-300 text-xs font-semibold uppercase mb-1.5">Category</label>
+            <select id="order-category" onchange="onCategoryChange()" class="form-input text-sm">
+              <option value="">-- Select Category --</option>
+            </select>
+          </div>
+
+          <!-- Service Select -->
+          <div>
+            <label class="block text-slate-300 text-xs font-semibold uppercase mb-1.5">Service</label>
+            <select id="order-service" onchange="onServiceChange()" class="form-input text-sm">
+              <option value="">-- Select Service --</option>
+            </select>
+          </div>
+
+          <!-- Service Rate & Limits Info Card -->
+          <div id="service-info-card" class="hidden bg-slate-900/90 border border-slate-700/70 rounded-xl p-4 text-xs space-y-2">
+            <div class="flex justify-between items-center text-slate-300">
+              <span>Rate per 1,000:</span>
+              <span class="text-emerald-400 font-bold text-sm">₹<span id="service-rate-display">0.00</span></span>
+            </div>
+            <div class="flex justify-between items-center text-slate-400">
+              <span>Min / Max Quantity:</span>
+              <span class="font-mono text-slate-200"><span id="service-min-display">0</span> / <span id="service-max-display">0</span></span>
+            </div>
+          </div>
+
+          <!-- Link Input -->
+          <div>
+            <label class="block text-slate-300 text-xs font-semibold uppercase mb-1.5">Target Link / URL</label>
+            <input type="text" id="order-link" required placeholder="https://instagram.com/yourprofile or post link" class="form-input text-sm">
+          </div>
+
+          <!-- Quantity Input -->
+          <div>
+            <label class="block text-slate-300 text-xs font-semibold uppercase mb-1.5">Quantity</label>
+            <input type="number" id="order-quantity" oninput="calculateOrderCharge()" required placeholder="Enter quantity (e.g. 1000)" class="form-input text-sm">
+          </div>
+
+          <!-- Total Cost Display Card -->
+          <div class="bg-indigo-950/40 border border-indigo-500/30 rounded-xl p-4 flex items-center justify-between">
+            <span class="text-slate-300 font-medium text-sm">Total Charge:</span>
+            <span class="text-2xl font-black text-emerald-400">₹<span id="order-charge-display">0.00</span></span>
+          </div>
+
+          <button type="submit" class="btn-primary-custom w-full py-3.5 text-base font-bold">
+            <i class="fa-solid fa-paper-plane mr-2"></i> Submit Order
+          </button>
+
+        </form>
+      </div>
+
+      <!-- Quick Guidance Sidebar -->
+      <div class="space-y-6">
+        <div class="glass-card p-6 border border-emerald-500/20">
+          <div class="flex items-center space-x-3 mb-3 text-emerald-400 font-bold">
+            <i class="fa-solid fa-shield-halved text-xl"></i>
+            <span>Wallet & Balance Info</span>
+          </div>
+          <p class="text-slate-300 text-sm mb-4">
+            Your current balance is <strong class="text-emerald-400">₹<span id="sidebar-balance">0.00</span></strong>.
+          </p>
+          <button onclick="switchCustomerTab('add-money')" class="w-full py-2.5 rounded-lg bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 text-xs font-bold border border-emerald-500/40 transition">
+            <i class="fa-solid fa-plus-circle mr-1"></i> Add Funds (Min ₹5)
+          </button>
+        </div>
+
+        <div class="glass-card p-6">
+          <h3 class="text-slate-200 font-bold text-sm mb-3">💡 Important Tips</h3>
+          <ul class="text-xs text-slate-400 space-y-2 list-disc pl-4">
+            <li>Make sure target account/profile is set to <strong>Public</strong>.</li>
+            <li>Double-check link format before submitting order.</li>
+            <li>Orders are processed automatically via provider APIs.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 2: ADD MONEY / WALLET (Min Deposit ₹5) -->
+    <div id="tab-add-money" class="hidden grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <div class="glass-card p-6 shadow-xl lg:col-span-2">
+        <div class="flex items-center justify-between mb-6">
+          <h2 class="text-xl font-extrabold text-white flex items-center">
+            <i class="fa-solid fa-qrcode text-emerald-400 mr-2.5"></i> Add Funds via UPI QR Code
+          </h2>
+          <span class="px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 text-xs font-bold">
+            Minimum Add Money: ₹5
+          </span>
+        </div>
+
+        <!-- QR Code & Payment Info Box -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 bg-slate-900/90 p-5 rounded-2xl border border-slate-700/80 mb-6 items-center">
+          <div class="flex flex-col items-center justify-center p-3 bg-white rounded-xl">
+            <img id="upi-qr-image" src="" alt="Scan to Pay UPI QR Code" class="w-48 h-48 object-contain">
+            <span class="text-slate-800 text-[11px] font-bold mt-1">Scan with GPay, PhonePe, Paytm, BHIM</span>
+          </div>
+
+          <div class="space-y-3">
+            <div>
+              <span class="text-slate-400 text-xs font-semibold block uppercase">UPI ID</span>
+              <div class="flex items-center space-x-2 mt-1">
+                <input type="text" id="upi-id-display" readonly value="growyourpage@upi" class="form-input text-xs font-mono font-bold py-2 bg-slate-950">
+                <button onclick="copyUpiId()" class="px-3 py-2 bg-slate-800 hover:bg-slate-700 text-white rounded-lg text-xs font-bold transition">Copy</button>
+              </div>
+            </div>
+            <div>
+              <span class="text-slate-400 text-xs font-semibold block uppercase">Account Holder</span>
+              <p id="upi-name-display" class="text-white text-sm font-semibold">Grow Your Page Official</p>
+            </div>
+            <div class="p-3 bg-indigo-500/10 border border-indigo-500/30 rounded-xl text-xs text-indigo-300">
+              <i class="fa-solid fa-circle-info mr-1"></i> Scan QR code or copy UPI ID to make payment of minimum ₹5, then paste UTR below.
+            </div>
+          </div>
+        </div>
+
+        <!-- Add Money Submission Form -->
+        <form id="add-money-form" onsubmit="submitDepositRequest(event)" class="space-y-5">
+          <div>
+            <label class="block text-slate-300 text-xs font-semibold uppercase mb-1.5">Amount (INR ₹)</label>
+            <div class="relative">
+              <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400 font-bold">₹</span>
+              <input type="number" id="deposit-amount" min="5" step="1" required placeholder="Minimum 5" class="form-input pl-8 text-sm font-bold">
+            </div>
+            
+            <!-- Quick Amount Chips -->
+            <div class="flex items-center space-x-2 mt-2">
+              <span class="text-xs text-slate-400 font-medium">Quick Select:</span>
+              <button type="button" onclick="setDepositAmount(10)" class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-emerald-500/20 hover:text-emerald-300 text-xs font-bold text-slate-300 border border-slate-700 transition">₹10</button>
+              <button type="button" onclick="setDepositAmount(50)" class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-emerald-500/20 hover:text-emerald-300 text-xs font-bold text-slate-300 border border-slate-700 transition">₹50</button>
+              <button type="button" onclick="setDepositAmount(100)" class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-emerald-500/20 hover:text-emerald-300 text-xs font-bold text-slate-300 border border-slate-700 transition">₹100</button>
+              <button type="button" onclick="setDepositAmount(500)" class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-emerald-500/20 hover:text-emerald-300 text-xs font-bold text-slate-300 border border-slate-700 transition">₹500</button>
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-slate-300 text-xs font-semibold uppercase mb-1.5">12-Digit UTR / Transaction Reference Number</label>
+            <input type="text" id="deposit-utr" required placeholder="Paste 12-digit UPI UTR number (e.g. 329810492812)" class="form-input text-sm font-mono tracking-wider">
+            <p class="text-xs text-emerald-400 mt-1 font-medium"><i class="fa-solid fa-bolt mr-1"></i> Instant Auto-Verification: Wallet will be credited instantly upon UTR submission!</p>
+          </div>
+
+          <button type="submit" class="btn-primary-custom w-full py-3.5 text-base font-bold bg-gradient-to-r from-emerald-500 to-teal-600 shadow-lg">
+            <i class="fa-solid fa-bolt mr-2"></i> Verify & Add Money Instantly
+          </button>
+        </form>
+      </div>
+
+      <!-- Deposit Requests History Column -->
+      <div class="glass-card p-6">
+        <h3 class="text-slate-200 font-bold text-base mb-4 flex items-center">
+          <i class="fa-solid fa-receipt text-indigo-400 mr-2"></i> Your Recent Deposits
+        </h3>
+
+        <div class="overflow-y-auto max-h-[480px] space-y-3" id="deposit-history-list">
+          <div class="text-center text-slate-500 text-xs py-6">Loading deposit history...</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 3: ORDER HISTORY -->
+    <div id="tab-orders" class="hidden glass-card p-6 shadow-xl">
+      <div class="flex flex-col md:flex-row md:items-center justify-between mb-6 gap-4">
+        <h2 class="text-xl font-extrabold text-white flex items-center">
+          <i class="fa-solid fa-clock-rotate-left text-indigo-400 mr-2.5"></i> Your Orders History
+        </h2>
+        <button onclick="loadUserOrders()" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-bold rounded-xl transition">
+          <i class="fa-solid fa-rotate mr-1"></i> Refresh Orders
+        </button>
+      </div>
+
+      <div class="overflow-x-auto">
+        <table class="w-full text-left text-sm text-slate-300">
+          <thead class="bg-slate-800/80 text-slate-400 uppercase text-xs font-semibold border-b border-slate-700">
+            <tr>
+              <th class="py-3.5 px-4">Order ID</th>
+              <th class="py-3.5 px-4">Service</th>
+              <th class="py-3.5 px-4">Link</th>
+              <th class="py-3.5 px-4 text-center">Qty</th>
+              <th class="py-3.5 px-4 text-right">Charge</th>
+              <th class="py-3.5 px-4 text-center">Status</th>
+              <th class="py-3.5 px-4 text-right">Date</th>
+            </tr>
+          </thead>
+          <tbody id="user-orders-table-body" class="divide-y divide-slate-800">
+            <tr>
+              <td colspan="7" class="py-8 text-center text-slate-500">Loading orders...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- TAB 4: SERVICES DIRECTORY -->
+    <div id="tab-services" class="hidden glass-card p-6 shadow-xl">
+      <h2 class="text-xl font-extrabold text-white mb-6 flex items-center">
+        <i class="fa-solid fa-list-ul text-purple-400 mr-2.5"></i> Service Directory & Rates
+      </h2>
+
+      <div class="overflow-x-auto">
+        <table class="w-full text-left text-sm text-slate-300">
+          <thead class="bg-slate-800/80 text-slate-400 uppercase text-xs font-semibold border-b border-slate-700">
+            <tr>
+              <th class="py-3.5 px-4">ID</th>
+              <th class="py-3.5 px-4">Category</th>
+              <th class="py-3.5 px-4">Service Name</th>
+              <th class="py-3.5 px-4 text-right">Rate / 1k</th>
+              <th class="py-3.5 px-4 text-center">Min / Max</th>
+            </tr>
+          </thead>
+          <tbody id="directory-services-table-body" class="divide-y divide-slate-800">
+            <tr>
+              <td colspan="5" class="py-8 text-center text-slate-500">Loading services...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </main>
+
+  <script>
+    let token = localStorage.getItem('gyp_token');
+    let currentUser = null;
+    let availableServices = [];
+    let paymentSettings = {};
+
+    function checkAuth() {
+      if (!token) {
+        window.location.href = '/login';
+        return false;
+      }
+      return true;
+    }
+
+    function handleLogout() {
+      localStorage.removeItem('gyp_token');
+      localStorage.removeItem('gyp_user');
+      window.location.href = '/login';
+    }
+
+    function showGlobalAlert(msg, isSuccess = false) {
+      const box = document.getElementById('alert-box');
+      box.classList.remove('hidden');
+      if (isSuccess) {
+        box.className = 'mb-6 p-4 rounded-xl text-sm font-medium bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 shadow-lg';
+      } else {
+        box.className = 'mb-6 p-4 rounded-xl text-sm font-medium bg-red-500/20 text-red-300 border border-red-500/40 shadow-lg';
+      }
+      box.innerText = msg;
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    async function loadUserProfile() {
+      try {
+        const res = await fetch('/api/auth/me', {
+          headers: { 'Authorization': 'Bearer ' + token }
+        });
+        const data = await res.json();
+        if (data.success) {
+          currentUser = data.user;
+          document.getElementById('username-display').innerText = currentUser.username;
+          document.getElementById('user-balance-nav').innerText = currentUser.balance.toFixed(2);
+          document.getElementById('sidebar-balance').innerText = currentUser.balance.toFixed(2);
+
+          if (currentUser.role === 'admin') {
+            showGlobalAlert('Logged in as Admin. Redirecting to Admin Dashboard...');
+            window.location.href = '/admin-dashboard';
+          }
+        } else {
+          handleLogout();
+        }
+      } catch (err) {
+        console.error('Failed to load profile:', err);
+      }
+    }
+
+    async function loadCustomerServices() {
+      try {
+        const res = await fetch('/api/customer/services', {
+          headers: { 'Authorization': 'Bearer ' + token }
+        });
+        const data = await res.json();
+        if (data.success) {
+          availableServices = data.services;
+          populateCategoryDropdown();
+          renderDirectoryServices(availableServices);
+        }
+      } catch (err) {
+        console.error('Failed to load customer services:', err);
+      }
+    }
+
+    function populateCategoryDropdown() {
+      const catSelect = document.getElementById('order-category');
+      const categories = [...new Set(availableServices.map(s => s.category))];
+
+      catSelect.innerHTML = '<option value="">-- Select Category --</option>' +
+        categories.map(c => `<option value="${c}">${c}</option>`).join('');
+    }
+
+    function onCategoryChange() {
+      const selectedCat = document.getElementById('order-category').value;
+      const serviceSelect = document.getElementById('order-service');
+      const infoCard = document.getElementById('service-info-card');
+      
+      infoCard.classList.add('hidden');
+      document.getElementById('order-charge-display').innerText = '0.00';
+
+      if (!selectedCat) {
+        serviceSelect.innerHTML = '<option value="">-- Select Service --</option>';
+        return;
+      }
+
+      const filtered = availableServices.filter(s => s.category === selectedCat);
+      serviceSelect.innerHTML = '<option value="">-- Select Service --</option>' +
+        filtered.map(s => `<option value="${s.id}">${s.name} - ₹${s.rate.toFixed(2)} / 1k</option>`).join('');
+    }
+
+    function onServiceChange() {
+      const serviceId = document.getElementById('order-service').value;
+      const infoCard = document.getElementById('service-info-card');
+
+      if (!serviceId) {
+        infoCard.classList.add('hidden');
+        document.getElementById('order-charge-display').innerText = '0.00';
+        return;
+      }
+
+      const service = availableServices.find(s => s.id == serviceId);
+      if (service) {
+        document.getElementById('service-rate-display').innerText = service.rate.toFixed(2);
+        document.getElementById('service-min-display').innerText = service.min_quantity;
+        document.getElementById('service-max-display').innerText = service.max_quantity.toLocaleString();
+        infoCard.classList.remove('hidden');
+        calculateOrderCharge();
+      }
+    }
+
+    function calculateOrderCharge() {
+      const serviceId = document.getElementById('order-service').value;
+      const qtyInput = document.getElementById('order-quantity');
+      const chargeDisplay = document.getElementById('order-charge-display');
+
+      if (!serviceId || !qtyInput.value) {
+        chargeDisplay.innerText = '0.00';
+        return;
+      }
+
+      const service = availableServices.find(s => s.id == serviceId);
+      const qty = parseInt(qtyInput.value) || 0;
+
+      if (service && qty > 0) {
+        const totalCost = (qty / 1000) * service.rate;
+        chargeDisplay.innerText = totalCost.toFixed(2);
+      } else {
+        chargeDisplay.innerText = '0.00';
+      }
+    }
+
+    async function submitNewOrder(e) {
+      e.preventDefault();
+      document.getElementById('alert-box').classList.add('hidden');
+
+      const serviceId = document.getElementById('order-service').value;
+      const link = document.getElementById('order-link').value;
+      const quantity = document.getElementById('order-quantity').value;
+
+      if (!serviceId || !link || !quantity) {
+        showGlobalAlert('Please fill in all order fields.');
+        return;
+      }
+
+      try {
+        const res = await fetch('/api/customer/orders', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + token
+          },
+          body: JSON.stringify({ service_id: serviceId, link, quantity })
+        });
+        const data = await res.json();
+
+        if (data.success) {
+          showGlobalAlert(data.message, true);
+          document.getElementById('new-order-form').reset();
+          document.getElementById('service-info-card').classList.add('hidden');
+          document.getElementById('order-charge-display').innerText = '0.00';
+          loadUserProfile(); // refresh balance
+        } else {
+          showGlobalAlert(data.message);
+        }
+      } catch (err) {
+        showGlobalAlert('Failed to place order. Server error.');
+      }
+    }
+
+    async function loadPaymentSettings() {
+      try {
+        const res = await fetch('/api/customer/payment-settings', {
+          headers: { 'Authorization': 'Bearer ' + token }
+        });
+        const data = await res.json();
+        if (data.success) {
+          paymentSettings = data.settings;
+          document.getElementById('upi-id-display').value = paymentSettings.upi_id;
+          document.getElementById('upi-name-display').innerText = paymentSettings.upi_name;
+          document.getElementById('upi-qr-image').src = paymentSettings.qr_code_url;
+        }
+      } catch (err) {
+        console.error('Failed to load payment settings:', err);
+      }
+    }
+
+    function copyUpiId() {
+      const upiInput = document.getElementById('upi-id-display');
+      navigator.clipboard.writeText(upiInput.value);
+      alert('UPI ID copied to clipboard!');
+    }
+
+    function setDepositAmount(amt) {
+      document.getElementById('deposit-amount').value = amt;
+    }
+
+    async function submitDepositRequest(e) {
+      e.preventDefault();
+      document.getElementById('alert-box').classList.add('hidden');
+
+      const amount = document.getElementById('deposit-amount').value;
+      const transaction_id = document.getElementById('deposit-utr').value;
+
+      if (parseFloat(amount) < 5) {
+        showGlobalAlert('Minimum add money amount is ₹5. Please enter ₹5 or more.');
+        return;
+      }
+
+      try {
+        const res = await fetch('/api/customer/add-money', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + token
+          },
+          body: JSON.stringify({ amount, transaction_id, payment_method: 'UPI_QR' })
+        });
+        const data = await res.json();
+
+        if (data.success) {
+          showGlobalAlert(data.message, true);
+          document.getElementById('add-money-form').reset();
+          loadUserProfile(); // Refresh user wallet balance instantly
+          loadDepositHistory();
+        } else {
+          showGlobalAlert(data.message);
+        }
+      } catch (err) {
+        showGlobalAlert('Failed to submit deposit. Server error.');
+      }
+    }
+
+    async function loadDepositHistory() {
+      try {
+        const res = await fetch('/api/customer/deposits', {
+          headers: { 'Authorization': 'Bearer ' + token }
+        });
+        const data = await res.json();
+        const container = document.getElementById('deposit-history-list');
+
+        if (data.success) {
+          if (data.deposits.length === 0) {
+            container.innerHTML = '<div class="text-center text-slate-500 text-xs py-6">No deposit history found.</div>';
+            return;
+          }
+
+          container.innerHTML = data.deposits.map(d => `
+            <div class="bg-slate-900/80 p-3.5 rounded-xl border border-slate-800 flex items-center justify-between text-xs">
+              <div>
+                <div class="font-bold text-white text-sm">₹${d.amount.toFixed(2)}</div>
+                <div class="font-mono text-[11px] text-slate-400">UTR: ${d.transaction_id}</div>
+                <div class="text-[10px] text-slate-500">${new Date(d.created_at).toLocaleString()}</div>
+              </div>
+              <div>
+                <span class="status-badge ${
+                  d.status === 'Approved' ? 'status-completed' : d.status === 'Rejected' ? 'status-canceled' : 'status-pending'
+                }">${d.status}</span>
+              </div>
+            </div>
+          `).join('');
+        }
+      } catch (err) {
+        console.error('Failed to load deposits:', err);
+      }
+    }
+
+    async function loadUserOrders() {
+      try {
+        const res = await fetch('/api/customer/orders', {
+          headers: { 'Authorization': 'Bearer ' + token }
+        });
+        const data = await res.json();
+        const tbody = document.getElementById('user-orders-table-body');
+
+        if (data.success) {
+          if (data.orders.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="7" class="py-8 text-center text-slate-500">No orders placed yet.</td></tr>';
+            return;
+          }
+
+          tbody.innerHTML = data.orders.map(o => `
+            <tr class="hover:bg-slate-800/40 transition">
+              <td class="py-3.5 px-4 font-mono text-xs text-indigo-400">#${o.id}</td>
+              <td class="py-3.5 px-4 font-medium text-white max-w-xs truncate">${o.service_name}</td>
+              <td class="py-3.5 px-4 font-mono text-xs text-slate-400 max-w-xs truncate"><a href="${o.link}" target="_blank" class="hover:underline text-indigo-300">${o.link}</a></td>
+              <td class="py-3.5 px-4 text-center font-bold text-slate-200">${o.quantity.toLocaleString()}</td>
+              <td class="py-3.5 px-4 text-right font-bold text-emerald-400">₹${o.charge.toFixed(2)}</td>
+              <td class="py-3.5 px-4 text-center">
+                <span class="status-badge ${
+                  o.status === 'Completed' ? 'status-completed' : o.status === 'In Progress' ? 'status-inprogress' : o.status === 'Canceled' ? 'status-canceled' : 'status-pending'
+                }">${o.status}</span>
+              </td>
+              <td class="py-3.5 px-4 text-right text-xs text-slate-500">${new Date(o.created_at).toLocaleDateString()}</td>
+            </tr>
+          `).join('');
+        }
+      } catch (err) {
+        console.error('Failed to load user orders:', err);
+      }
+    }
+
+    function renderDirectoryServices(services) {
+      const tbody = document.getElementById('directory-services-table-body');
+      if (services.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="5" class="py-8 text-center text-slate-500">No services available.</td></tr>';
+        return;
+      }
+
+      tbody.innerHTML = services.map(s => `
+        <tr class="hover:bg-slate-800/40 transition">
+          <td class="py-3.5 px-4 font-mono text-xs text-indigo-400">#${s.id}</td>
+          <td class="py-3.5 px-4"><span class="px-2.5 py-1 rounded-full text-xs font-semibold bg-slate-800 text-slate-300 border border-slate-700">${s.category}</span></td>
+          <td class="py-3.5 px-4 font-medium text-white">${s.name}</td>
+          <td class="py-3.5 px-4 text-right font-bold text-emerald-400">₹${s.rate.toFixed(2)}</td>
+          <td class="py-3.5 px-4 text-center text-slate-400 font-mono text-xs">${s.min_quantity} / ${s.max_quantity.toLocaleString()}</td>
+        </tr>
+      `).join('');
+    }
+
+    function switchCustomerTab(tab) {
+      document.getElementById('tab-new-order').classList.add('hidden');
+      document.getElementById('tab-add-money').classList.add('hidden');
+      document.getElementById('tab-orders').classList.add('hidden');
+      document.getElementById('tab-services').classList.add('hidden');
+
+      document.querySelectorAll('[id^="tab-btn-"]').forEach(btn => {
+        btn.className = 'px-5 py-2.5 rounded-xl font-semibold text-sm text-slate-400 hover:text-white hover:bg-slate-800/60 transition';
+      });
+
+      if (tab === 'new-order') {
+        document.getElementById('tab-new-order').classList.remove('hidden');
+        document.getElementById('tab-btn-new-order').className = 'px-5 py-2.5 rounded-xl font-bold text-sm bg-indigo-600 text-white shadow-lg transition';
+      } else if (tab === 'add-money') {
+        document.getElementById('tab-add-money').classList.remove('hidden');
+        document.getElementById('tab-btn-add-money').className = 'px-5 py-2.5 rounded-xl font-bold text-sm bg-indigo-600 text-white shadow-lg transition';
+        loadPaymentSettings();
+        loadDepositHistory();
+      } else if (tab === 'orders') {
+        document.getElementById('tab-orders').classList.remove('hidden');
+        document.getElementById('tab-btn-orders').className = 'px-5 py-2.5 rounded-xl font-bold text-sm bg-indigo-600 text-white shadow-lg transition';
+        loadUserOrders();
+      } else if (tab === 'services') {
+        document.getElementById('tab-services').classList.remove('hidden');
+        document.getElementById('tab-btn-services').className = 'px-5 py-2.5 rounded-xl font-bold text-sm bg-indigo-600 text-white shadow-lg transition';
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      if (checkAuth()) {
+        loadUserProfile();
+        loadCustomerServices();
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Grow Your Page - Social Media Growth Platform</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="min-h-screen flex flex-col">
+
+  <!-- Navigation Header -->
+  <nav class="glass-nav fixed top-0 left-0 right-0 z-50 py-4 px-6">
+    <div class="max-w-7xl mx-auto flex items-center justify-between">
+      <div class="flex items-center space-x-3">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-500 to-emerald-400 flex items-center justify-center text-white text-xl font-black shadow-lg">
+          G
+        </div>
+        <span class="text-2xl font-extrabold tracking-tight gradient-text">Grow Your Page</span>
+      </div>
+
+      <div class="flex items-center space-x-4">
+        <a href="/login" class="text-slate-300 hover:text-white font-medium px-4 py-2 transition">Login</a>
+        <a href="/login?tab=register" class="btn-primary-custom px-5 py-2.5 text-sm">Get Started</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <header class="pt-36 pb-20 px-6 max-w-7xl mx-auto text-center flex-grow">
+    <div class="inline-flex items-center space-x-2 px-4 py-1.5 rounded-full bg-indigo-500/10 border border-indigo-500/30 text-indigo-400 text-sm font-semibold mb-6">
+      <i class="fa-solid fa-bolt text-yellow-400"></i>
+      <span>Instant Social Media Growth & Reseller Platform</span>
+    </div>
+    
+    <h1 class="text-4xl md:text-6xl font-extrabold text-white tracking-tight mb-6 leading-tight">
+      Boost Your Social Presence with <br>
+      <span class="gradient-text">Grow Your Page</span>
+    </h1>
+
+    <p class="text-slate-400 text-lg md:text-xl max-w-2xl mx-auto mb-10">
+      High-quality Instagram, YouTube, Telegram & Facebook services. Connect external provider APIs, set custom rates, and enjoy instant wallet top-ups starting at just <span class="text-emerald-400 font-bold">₹5</span>!
+    </p>
+
+    <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+      <a href="/login?tab=register" class="btn-primary-custom px-8 py-3.5 text-base w-full sm:w-auto">
+        <i class="fa-solid fa-user-plus mr-2"></i> Register Now
+      </a>
+      <a href="#services-list" class="px-8 py-3.5 rounded-xl border border-slate-700 bg-slate-800/60 hover:bg-slate-800 text-white font-semibold w-full sm:w-auto transition">
+        <i class="fa-solid fa-list-check mr-2 text-indigo-400"></i> View Services
+      </a>
+    </div>
+
+    <!-- Feature Cards Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-16 text-left">
+      <div class="glass-card p-6">
+        <div class="w-12 h-12 rounded-xl bg-indigo-500/20 text-indigo-400 flex items-center justify-center text-2xl mb-4">
+          <i class="fa-solid fa-code"></i>
+        </div>
+        <h3 class="text-xl font-bold text-white mb-2">API Provider Connect</h3>
+        <p class="text-slate-400 text-sm">Connect any external provider API key and seamlessly sync services with custom margins.</p>
+      </div>
+
+      <div class="glass-card p-6">
+        <div class="w-12 h-12 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-2xl mb-4">
+          <i class="fa-solid fa-wallet"></i>
+        </div>
+        <h3 class="text-xl font-bold text-white mb-2">Min Add Money ₹5</h3>
+        <p class="text-slate-400 text-sm">Instant UPI QR payment support with a user-friendly minimum deposit of only ₹5.</p>
+      </div>
+
+      <div class="glass-card p-6">
+        <div class="w-12 h-12 rounded-xl bg-purple-500/20 text-purple-400 flex items-center justify-center text-2xl mb-4">
+          <i class="fa-solid fa-sliders"></i>
+        </div>
+        <h3 class="text-xl font-bold text-white mb-2">Custom Pricing & Rates</h3>
+        <p class="text-slate-400 text-sm">Full administrative control over per-service rate design, profit markup %, and limits.</p>
+      </div>
+    </div>
+  </header>
+
+  <!-- Live Public Services List Section -->
+  <section id="services-list" class="py-16 px-6 max-w-7xl mx-auto w-full">
+    <div class="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4">
+      <div>
+        <h2 class="text-3xl font-extrabold text-white">Available Services</h2>
+        <p class="text-slate-400 text-sm mt-1">Live price per 1,000 units with instant delivery guarantee</p>
+      </div>
+
+      <div class="flex items-center space-x-3">
+        <input type="text" id="search-services" placeholder="Search service..." class="form-input text-sm py-2 px-4 w-64" onkeyup="filterServices()">
+      </div>
+    </div>
+
+    <div class="glass-card overflow-hidden">
+      <div class="overflow-x-auto">
+        <table class="w-full text-left text-sm text-slate-300">
+          <thead class="bg-slate-800/80 text-slate-400 uppercase text-xs font-semibold border-b border-slate-700">
+            <tr>
+              <th class="py-4 px-6">ID</th>
+              <th class="py-4 px-6">Category</th>
+              <th class="py-4 px-6">Service Name</th>
+              <th class="py-4 px-6 text-right">Rate / 1k</th>
+              <th class="py-4 px-6 text-center">Min / Max</th>
+            </tr>
+          </thead>
+          <tbody id="services-table-body" class="divide-y divide-slate-800">
+            <tr>
+              <td colspan="5" class="py-8 text-center text-slate-500">Loading services...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="glass-nav py-8 border-t border-slate-800 mt-auto text-center text-slate-500 text-sm">
+    <div class="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-4">
+      <div class="flex items-center space-x-2">
+        <span class="font-bold text-white">Grow Your Page</span>
+        <span>&copy; 2026. All rights reserved.</span>
+      </div>
+      <div class="flex space-x-6 text-slate-400">
+        <a href="/login" class="hover:text-white transition">Customer Portal</a>
+        <a href="/login" class="hover:text-white transition">Admin Portal</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    let allServices = [];
+
+    async function loadPublicServices() {
+      try {
+        const res = await fetch('/api/public/services');
+        const data = await res.json();
+        if (data.success) {
+          allServices = data.services;
+          renderServices(allServices);
+        }
+      } catch (err) {
+        console.error('Failed to load services:', err);
+      }
+    }
+
+    function renderServices(services) {
+      const tbody = document.getElementById('services-table-body');
+      if (services.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="5" class="py-8 text-center text-slate-500">No active services found.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = services.map(s => `
+        <tr class="hover:bg-slate-800/40 transition">
+          <td class="py-4 px-6 font-mono text-xs text-indigo-400">#${s.id}</td>
+          <td class="py-4 px-6"><span class="px-2.5 py-1 rounded-full text-xs font-semibold bg-slate-800 text-slate-300 border border-slate-700">${s.category}</span></td>
+          <td class="py-4 px-6 font-medium text-white">${s.name}</td>
+          <td class="py-4 px-6 text-right font-bold text-emerald-400">₹${s.rate.toFixed(2)}</td>
+          <td class="py-4 px-6 text-center text-slate-400 font-mono text-xs">${s.min_quantity} / ${s.max_quantity.toLocaleString()}</td>
+        </tr>
+      `).join('');
+    }
+
+    function filterServices() {
+      const q = document.getElementById('search-services').value.toLowerCase();
+      const filtered = allServices.filter(s => 
+        s.name.toLowerCase().includes(q) || 
+        s.category.toLowerCase().includes(q)
+      );
+      renderServices(filtered);
+    }
+
+    document.addEventListener('DOMContentLoaded', loadPublicServices);
+  </script>
+</body>
+</html>
