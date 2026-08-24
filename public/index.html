@@ -47,8 +47,8 @@
       <a href="/login?tab=register" class="btn-primary-custom px-8 py-3.5 text-base w-full sm:w-auto">
         <i class="fa-solid fa-user-plus mr-2"></i> Register Now
       </a>
-      <a href="#services-list" class="px-8 py-3.5 rounded-xl border border-slate-700 bg-slate-800/60 hover:bg-slate-800 text-white font-semibold w-full sm:w-auto transition">
-        <i class="fa-solid fa-list-check mr-2 text-indigo-400"></i> View Services
+      <a href="/login" class="px-8 py-3.5 rounded-xl border border-slate-700 bg-slate-800/60 hover:bg-slate-800 text-white font-semibold w-full sm:w-auto transition">
+        <i class="fa-solid fa-right-to-bracket mr-2 text-indigo-400"></i> Customer Portal
       </a>
     </div>
 
@@ -80,38 +80,23 @@
     </div>
   </header>
 
-  <!-- Live Public Services List Section -->
-  <section id="services-list" class="py-16 px-6 max-w-7xl mx-auto w-full">
-    <div class="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4">
-      <div>
-        <h2 class="text-3xl font-extrabold text-white">Available Services</h2>
-        <p class="text-slate-400 text-sm mt-1">Live price per 1,000 units with instant delivery guarantee</p>
-      </div>
+  <!-- BOLD RED "GROW WITH US" SECTION -->
+  <section class="py-20 px-6 max-w-7xl mx-auto w-full text-center">
+    <div class="glass-card py-16 px-8 border border-red-500/30 shadow-2xl relative overflow-hidden">
+      <div class="absolute -top-24 -left-24 w-64 h-64 bg-red-600/10 rounded-full blur-3xl"></div>
+      <div class="absolute -bottom-24 -right-24 w-64 h-64 bg-red-600/10 rounded-full blur-3xl"></div>
 
-      <div class="flex items-center space-x-3">
-        <input type="text" id="search-services" placeholder="Search service..." class="form-input text-sm py-2 px-4 w-64" onkeyup="filterServices()">
-      </div>
-    </div>
+      <h2 class="text-5xl md:text-7xl font-black tracking-extrabold uppercase text-red-500 drop-shadow-[0_5px_15px_rgba(239,68,68,0.5)] mb-4">
+        GROW WITH US
+      </h2>
 
-    <div class="glass-card overflow-hidden">
-      <div class="overflow-x-auto">
-        <table class="w-full text-left text-sm text-slate-300">
-          <thead class="bg-slate-800/80 text-slate-400 uppercase text-xs font-semibold border-b border-slate-700">
-            <tr>
-              <th class="py-4 px-6">ID</th>
-              <th class="py-4 px-6">Category</th>
-              <th class="py-4 px-6">Service Name</th>
-              <th class="py-4 px-6 text-right">Rate / 1k</th>
-              <th class="py-4 px-6 text-center">Min / Max</th>
-            </tr>
-          </thead>
-          <tbody id="services-table-body" class="divide-y divide-slate-800">
-            <tr>
-              <td colspan="5" class="py-8 text-center text-slate-500">Loading services...</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+      <p class="text-slate-300 text-lg md:text-xl font-semibold max-w-2xl mx-auto mb-8">
+        Accelerate your social media presence with high-speed automated services and instant wallet refills.
+      </p>
+
+      <a href="/login?tab=register" class="inline-flex items-center px-10 py-4 rounded-xl bg-gradient-to-r from-red-600 to-rose-500 hover:from-red-500 hover:to-rose-400 text-white font-extrabold text-lg shadow-lg hover:shadow-red-500/40 transition transform hover:-translate-y-0.5">
+        <i class="fa-solid fa-rocket mr-3"></i> Get Started Now
+      </a>
     </div>
   </section>
 
@@ -128,51 +113,5 @@
       </div>
     </div>
   </footer>
-
-  <script>
-    let allServices = [];
-
-    async function loadPublicServices() {
-      try {
-        const res = await fetch('/api/public/services');
-        const data = await res.json();
-        if (data.success) {
-          allServices = data.services;
-          renderServices(allServices);
-        }
-      } catch (err) {
-        console.error('Failed to load services:', err);
-      }
-    }
-
-    function renderServices(services) {
-      const tbody = document.getElementById('services-table-body');
-      if (services.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="5" class="py-8 text-center text-slate-500">No active services found.</td></tr>`;
-        return;
-      }
-
-      tbody.innerHTML = services.map(s => `
-        <tr class="hover:bg-slate-800/40 transition">
-          <td class="py-4 px-6 font-mono text-xs text-indigo-400">#${s.id}</td>
-          <td class="py-4 px-6"><span class="px-2.5 py-1 rounded-full text-xs font-semibold bg-slate-800 text-slate-300 border border-slate-700">${s.category}</span></td>
-          <td class="py-4 px-6 font-medium text-white">${s.name}</td>
-          <td class="py-4 px-6 text-right font-bold text-emerald-400">₹${s.rate.toFixed(2)}</td>
-          <td class="py-4 px-6 text-center text-slate-400 font-mono text-xs">${s.min_quantity} / ${s.max_quantity.toLocaleString()}</td>
-        </tr>
-      `).join('');
-    }
-
-    function filterServices() {
-      const q = document.getElementById('search-services').value.toLowerCase();
-      const filtered = allServices.filter(s => 
-        s.name.toLowerCase().includes(q) || 
-        s.category.toLowerCase().includes(q)
-      );
-      renderServices(filtered);
-    }
-
-    document.addEventListener('DOMContentLoaded', loadPublicServices);
-  </script>
 </body>
 </html>
